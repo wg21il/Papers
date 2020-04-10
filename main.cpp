@@ -1,70 +1,80 @@
 
+// include local array implementation with the
+// addes c_array() functionality
 #include "array"
-#include <type_traits>
 
-constexpr int array_size = 8;
+// just because
+constexpr int ARRAY_SIZE = 8;
 using element_t = int;
 
-struct ref{};
-
-ref foo( element_t (&ar)[array_size] ){
-    return {};
-}
-
-struct const_ref{};
-
-const_ref foo( const element_t (&ar)[array_size] ){
-    return {};
-}
-
+// declaring types to verify
+// ther correct function call
+struct ref {};
+struct const_ref {};
 struct pointer {};
+struct const_pointer {};
+struct rvalue_ref {};
+struct const_rvalue_ref {};
 
-pointer foo( element_t (*ar)[array_size] ){
-    return {};
+// overloads to verify correct
+// overload resulotion
+
+ref foo(element_t (&ar)[ARRAY_SIZE]) {
+	return {};
 }
 
-struct const_pointer{};
-
-const_pointer foo( const element_t (*ar)[array_size] ){
-    return {};
+const_ref foo(const element_t (&ar)[ARRAY_SIZE]) {
+	return {};
 }
 
-struct rvalue_ref{};
-
-rvalue_ref foo( element_t (&&ar)[array_size] ){
-    return {};
+pointer foo(element_t (*ar)[ARRAY_SIZE]) {
+	return {};
 }
 
-template<typename Expected, typename Actual>
-void assert_type_is(Actual &&) {
-    static_assert(std::is_same_v<Expected, Actual>, "Types are not the same");
+const_pointer foo(const element_t (*ar)[ARRAY_SIZE]) {
+	return {};
 }
 
-int main()
-{
-    using array_t = std::array<element_t, array_size>;
-    {
-        array_t arr = {0};
-        assert_type_is<ref>(foo(arr.c_array()));
-        assert_type_is<pointer>(foo(&arr.c_array()));
-    }
-    {
-        const array_t arr = {0};
-        assert_type_is<const_ref>(foo(arr.c_array()));
-        assert_type_is<const_pointer>(foo(&arr.c_array()));
-    }
-    {
-        auto get_arr = []()->array_t{
-            return {0};
-        };
-        assert_type_is<rvalue_ref>(foo(get_arr().c_array()));
-    }
-    {
-        auto get_arr = []()->const array_t{
-            return {0};
-        };
-        assert_type_is<const_ref>(foo(get_arr().c_array()));
-    }
+rvalue_ref foo(element_t(&&ar)[ARRAY_SIZE]) {
+	return {};
+}
 
-    return 0;
+const_rvalue_ref foo(const element_t(&&ar)[ARRAY_SIZE]) {
+	return {};
+}
+
+// assert-is-same-type assistance function
+template <typename ExpectedType, typename ActualType>
+void assert_is_same(ActualType&&) {
+	static_assert(std::is_same<ExpectedType, ActualType>::value, "types are not the same");
+}
+
+int main() {
+
+	// use a simple array in all tests
+	using array_t = std::array<element_t, ARRAY_SIZE>;
+	{
+		// mutable ref and pointer
+		array_t arr{};
+		assert_is_same<ref>(foo(arr.c_array()));
+		assert_is_same<pointer>(foo(&arr.c_array()));
+	}
+	{
+		// const ref and pointer
+		const array_t arr{};
+		assert_is_same<const_ref>(foo(arr.c_array()));
+		assert_is_same<const_pointer>(foo(&arr.c_array()));
+	}
+	{
+		// function returning rvalue array_t
+		auto get_arr = []() -> array_t { return {}; };
+		assert_is_same<rvalue_ref>(foo(get_arr().c_array()));
+	}
+	{
+		// function returning const rvalue array_t
+		auto get_arr = []() -> const array_t { return {}; };
+		assert_is_same<const_rvalue_ref>(foo(get_arr().c_array()));
+	}
+
+	return 0;
 }
