@@ -9,10 +9,10 @@ Each paper resides in its own directory.
 Each paper is prefixed by `P<number>/`
 The main paper branch must be called `P<number>/master`.
 Working branches on a paper are freely named under `P<number>/<free-name>`
-Pull Requests for a paper are naturally to its master branch
+Pull Requests for a paper are naturally go to its master branch.
 
 ### Directory Naming
-Each paper has its own directory named after the paper name.
+Each paper has its own directory named after the paper name: `P<number>`
 
 ### Branch Master
 The branch `master` should be empty except for this file.
@@ -23,4 +23,5 @@ The working paper https://wg21.link/p0635 resides in `./P06535` and
 has a master branch `P06535/master`
 
 ## Managment
-Each paper owner is encouraged to add a restriction not allowing to commit directly to `P<number>/master`
+Branches following the `P<number>/master` format are protected from direct commits. Only pull requests are allowed.
+`P<number>/master` is enforced by github via: `P[0-9][0-9][0-9][0-9]/master`
