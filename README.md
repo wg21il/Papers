@@ -23,4 +23,4 @@ The working paper https://wg21.link/p0635 resides in `./P06535` and
 has a master branch `P06535/master`
 
 ## Managment
-Each paper owner is encaurged to add a restriction not allowing to commit directly to `P<number>/master`
+Each paper owner is encouraged to add a restriction not allowing to commit directly to `P<number>/master`
