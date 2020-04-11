@@ -14,9 +14,9 @@ Pull Requests for a paper are naturally go to its master branch.
 ### Directory Naming
 Each paper has its own directory named after the paper name: `P<number>`
 
-### Branch Master
-The branch `master` should be empty except for this file.
-*No need* to merge `P<number>/master` into master
+### Branch master
+The branch `master` contains work that is ready for or was reviewed by WG21.
+See [Procedures](https://github.com/wg21il/Papers/wiki/Procedures) for workflow details. 
 
 ### Example
 The working paper https://wg21.link/p0635 resides in `./P06535` and 
