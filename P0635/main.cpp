@@ -1,14 +1,14 @@
 
 // include local array implementation with the
-// addes c_array() functionality
+// added c_array() functionality
 #include "array"
 
-// just because
+// setup for the examples
 constexpr int ARRAY_SIZE = 8;
 using element_t = int;
 
 // declaring types to verify
-// ther correct function call
+// the correct function call
 struct ref {};
 struct const_ref {};
 struct pointer {};
@@ -17,7 +17,7 @@ struct rvalue_ref {};
 struct const_rvalue_ref {};
 
 // overloads to verify correct
-// overload resulotion
+// overload resolution
 
 ref foo(element_t (&ar)[ARRAY_SIZE]) {
 	return {};
