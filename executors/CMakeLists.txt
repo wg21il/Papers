@@ -27,6 +27,11 @@ set_target_properties(
         CXX_STANDARD    20
 )
 
+target_link_libraries(
+    ${PROJECT_NAME} 
+    pthread
+)
+
 target_compile_options(
     executors
     PRIVATE
@@ -36,6 +41,7 @@ target_compile_options(
 target_sources(
     ${PROJECT_NAME}
     PRIVATE
+    #executor.cpp
         main_free_func.cpp
 )
 
