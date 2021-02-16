@@ -2,3 +2,4 @@
 	path = pdf-generator
 	url = https://github.com/mpark/wg21.git
 	ignore = dirty
+	branch = master
