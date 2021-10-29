@@ -1,3 +1,9 @@
 # still empty
+*swp
+.viminfo
+home/.cache/
+home/.python_history
+home/pandoc_latest/
+
 
 

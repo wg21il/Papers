@@ -1,0 +1,10 @@
+[user]
+	name = Ran Regev
+	email = regev.ran@gmail.com
+[core]
+	pager = cat
+[alias]
+	co = checkout
+	lg = log --oneline
+	br = branch
+	st = status -bs
