@@ -15,6 +15,15 @@ TEST_CASE("t1")
         );
 
     CHECK(res == std::strong_ordering::less);
-}
 
+    /*
+    static_assert(
+            std::same_as<
+                std::invoke_result_t<
+                    std::compare_three_way,int,int
+                >, 
+                std::strong_ordering
+            >);
+    */
+}
 

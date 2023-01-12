@@ -7,10 +7,25 @@ namespace std::ranges
     template<
         input_iterator I1, sentinel_for<I1> S1,
         input_iterator I2, sentinel_for<I2> S2,
+        class Comp,
+        class Proj1,
+        class Proj2
+    >
+    using three_way_comp_result_t =
+        invoke_result_t<Comp, std::projected<I1, Proj1>, std::projected<I2, Proj2>>;
+
+    template<
+        input_iterator I1, sentinel_for<I1> S1,
+        input_iterator I2, sentinel_for<I2> S2,
         class Comp = compare_three_way,
         class Proj1 = identity, 
         class Proj2 = identity
     >
+    requires
+        //true ||
+        std::convertible_to<three_way_comp_result_t<I1,S1,I2,S2,Comp,Proj1,Proj2>, strong_ordering> ||
+        std::convertible_to<three_way_comp_result_t<I1,S1,I2,S2,Comp,Proj1,Proj2>, weak_ordering> ||
+        std::convertible_to<three_way_comp_result_t<I1,S1,I2,S2,Comp,Proj1,Proj2>, partial_ordering>
     constexpr auto
         lexicographical_compare_three_way( 
             I1 first1, 
