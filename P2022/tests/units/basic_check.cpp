@@ -2,42 +2,93 @@
 
 #include "catch2/catch_all.hpp"
 
+using namespace std;
+
 template<
-    typename T,
-    class Comp = std::compare_three_way,
-    class Proj = std::identity
+    input_iterator F1,
+    input_iterator L1,
+    input_iterator F2,
+    input_iterator L2,
+    class Comp = compare_three_way,
+    class Proj1 = identity,
+    class Proj2 = identity
 >
 requires 
-    std::same_as<std::invoke_result_t<Comp,T,T>, std::strong_ordering> ||
-    std::same_as<std::invoke_result_t<Comp,T,T>, std::weak_ordering> ||
-    std::same_as<std::invoke_result_t<Comp,T,T>, std::partial_ordering>
-auto foo(
-        T t1, 
-        T t2, 
-        Comp f = {},
-        Proj p = {}
+    same_as<invoke_result_t<Comp, invoke_result_t<Proj1, F1>, invoke_result_t<Proj2, F2>>, strong_ordering> ||
+    same_as<invoke_result_t<Comp, invoke_result_t<Proj1, F1>, invoke_result_t<Proj2, F2>>, weak_ordering> ||
+    same_as<invoke_result_t<Comp, invoke_result_t<Proj1, F1>, invoke_result_t<Proj2, F2>>, partial_ordering>
+auto compare(
+        F1 f1, L1 l1,
+        F2 f2, L2 l2,
+        Comp comp = {},
+        Proj1 p1 = {},
+        Proj2 p2 = {}
     ) -> 
-    std::common_comparison_category_t<
-        decltype(std::invoke(f, t1, t2)), std::strong_ordering>
+    common_comparison_category_t<
+        decltype(
+                invoke(comp, invoke(p1,*f1), invoke(p2,*f2))), strong_ordering>
 {
-    return std::invoke(f, t1, t2);
+    while (f1 != l1)
+    {
+        if (f2 == l2)
+        {
+            return strong_ordering::greater;
+        }
+
+        if (
+            auto cmp = comp(invoke(p1, *f1), invoke(p2, *f2));
+            cmp != 0 
+        ) 
+        {
+            return cmp;
+        }
+
+        ++f1;
+        ++f2;
+    }
+
+    // GCC 11 implementation with the
+    // note: See PR 94006
+    return (f2 == l2) <=> true; 
 }
 
 struct goo
 {
-    template<typename T>
-    auto operator()(T x, T y) -> std::partial_ordering
+    template<typename T, typename U = T>
+    auto operator()(T t, U u) -> partial_ordering
     {
-        return std::partial_ordering::less;
+
+        static_assert(std::same_as<T,int>);
+        static_assert(std::same_as<U,char>);
+
+        int char_as_int = static_cast<int>(u);
+        if (char_as_int < 10)
+        {
+            return char_as_int <=> t;
+        }
+        else
+        {
+            return partial_ordering::unordered;
+        }
     }
+
+    /*
+    auto operator()(int t, char u) -> partial_ordering
+    {
+        return partial_ordering::less;
+    }
+    */
 };
     
 
 TEST_CASE("basic_check")
 {
-    double d = 1;
-    foo(d, d);
-    //foo(d, d, std::compare_three_way{});
+    vector<int>  v1{1,2,3,4};
+    vector<char> v2{'a', 'b'};
 
-    CHECK(true);
+    compare(
+            v1.begin(), v1.end(),
+            v2.begin(), v2.end(),
+            goo{}
+           ); 
 }
