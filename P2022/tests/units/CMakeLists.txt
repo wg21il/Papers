@@ -19,6 +19,7 @@ add_executable(
     ${PROJECT_NAME} 
     nop.cpp
     containers.cpp
+    basic_check.cpp
     t1.cpp
 )
 
