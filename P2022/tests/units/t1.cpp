@@ -17,4 +17,3 @@ TEST_CASE("t1")
     CHECK(res == std::strong_ordering::less);
 }
 
-

@@ -5,12 +5,27 @@
 namespace std::ranges
 {
     template<
+        input_iterator I1,
+        input_iterator I2,
+        class Comp,
+        class Proj1,
+        class Proj2
+    >
+    using lexicographical_compare_three_way_result_t =
+        invoke_result_t<Comp, typename projected<I1, Proj1>::value_type , typename projected<I2, Proj2>::value_type>;
+
+    template<
         input_iterator I1, sentinel_for<I1> S1,
         input_iterator I2, sentinel_for<I2> S2,
         class Comp = compare_three_way,
         class Proj1 = identity, 
         class Proj2 = identity
     >
+    requires
+        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, strong_ordering> ||
+        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, weak_ordering> ||
+        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, partial_ordering>
+
     constexpr auto
         lexicographical_compare_three_way( 
             I1 first1, 
