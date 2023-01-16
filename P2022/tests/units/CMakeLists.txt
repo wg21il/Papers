@@ -11,7 +11,7 @@ project(
 set(CMAKE_BUILD_TYPE Debug)
 
 add_compile_options(
-    -fconcepts-diagnostics-depth=1
+    -fconcepts-diagnostics-depth=5
 )
 
 # the tests
@@ -19,6 +19,8 @@ add_executable(
     ${PROJECT_NAME} 
     nop.cpp
     containers.cpp
+    basic_check.cpp
+    unordered.cpp
     t1.cpp
 )
 
