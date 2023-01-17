@@ -22,6 +22,7 @@ add_executable(
     basic_check.cpp
     unordered.cpp
     t1.cpp
+    avi_tests.cpp
 )
 
 set_target_properties(
