@@ -1,6 +1,13 @@
-
-
 #include <iterator>
+#include <concepts>
+
+namespace std{
+    template <
+            typename T,
+            typename... Us
+    >
+    concept same_as_any_of = (std::same_as<T, Us> or ...); //exposition-only
+}
 
 namespace std::ranges
 {
@@ -12,7 +19,20 @@ namespace std::ranges
         class Proj2
     >
     using lexicographical_compare_three_way_result_t =
-        invoke_result_t<Comp, typename projected<I1, Proj1>::value_type , typename projected<I2, Proj2>::value_type>;
+        invoke_result_t<Comp, typename projected<I1, Proj1>::value_type , typename projected<I2, Proj2>::value_type>; //exposition-only
+
+
+    template<
+            std::input_iterator I1,
+            std::input_iterator I2,
+            class Comp,
+            class Proj1,
+            class Proj2
+    >
+    constexpr bool is_lexicographical_compare_three_way_result_ordering =
+            std::same_as_any_of<lexicographical_compare_three_way_result_t<I1, I2, Comp, Proj1, Proj2>,
+                    std::strong_ordering, std::weak_ordering, std::partial_ordering>; //exposition-only
+
 
     template<
         input_iterator I1, sentinel_for<I1> S1,
@@ -22,10 +42,7 @@ namespace std::ranges
         class Proj2 = identity
     >
     requires
-        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, strong_ordering> ||
-        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, weak_ordering> ||
-        std::same_as<lexicographical_compare_three_way_result_t<I1,I2,Comp,Proj1,Proj2>, partial_ordering>
-
+        is_lexicographical_compare_three_way_result_ordering<I1, I2, Comp, Proj1, Proj2>
     constexpr auto
         lexicographical_compare_three_way( 
             I1 first1, 
