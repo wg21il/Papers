@@ -1,8 +1,8 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_C_COMPILER gcc-11)
-set(CMAKE_CXX_COMPILER g++-11)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
 
 project(P2832)
 
