@@ -7,8 +7,8 @@
 namespace std 
 {
     template <
-        typename T, 
-        typename... U
+        class T, 
+        class... U
     >
     concept same_as_any_of = (std::same_as<T, U> or ...); // exposition only
 }
@@ -25,8 +25,8 @@ namespace std::ranges
     using lexicographical_compare_three_way_result_t =
         invoke_result_t<
             Comp, 
-            typename projected<I1, Proj1>::value_type, 
-            typename projected<I2, Proj2>::value_type
+            class projected<I1, Proj1>::value_type, 
+            class projected<I2, Proj2>::value_type
         >; // exposition-only
 
     template<
