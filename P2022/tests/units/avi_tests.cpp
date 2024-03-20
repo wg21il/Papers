@@ -3,6 +3,7 @@
 #include "3way.hpp"
 
 #include <array>
+#include <random>
 
 TEST_CASE("test with default projections and compare function")
 {
@@ -35,7 +36,7 @@ TEST_CASE("test with default projections and compare function")
             std::begin(l2), std::end(l2)
         );
 
-    CHECK(res == std::strong_ordering::less);
+    CHECK((res == std::strong_ordering::less));
 }
 
 TEST_CASE("test with custom compare function")
@@ -79,7 +80,7 @@ TEST_CASE("test with custom compare function")
             caseInsensitiveCmp
         );
 
-    CHECK(res == std::strong_ordering::greater);
+    CHECK((res == std::strong_ordering::greater));
 }
 
 TEST_CASE("test with custom compare function which returns std::partial_ordering::unordered")
@@ -138,7 +139,7 @@ TEST_CASE("test with custom compare function which returns std::partial_ordering
             myCmp
         );
 
-    CHECK(res == std::partial_ordering::unordered);
+    CHECK((res == std::partial_ordering::unordered));
 }
 
 TEST_CASE("test with custom projections and custom compare function")
@@ -181,5 +182,5 @@ TEST_CASE("test with custom projections and custom compare function")
             l2Proj
         );
 
-    CHECK(res == std::strong_ordering::equal);
+    CHECK((res == std::strong_ordering::equal));
 }

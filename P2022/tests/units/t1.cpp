@@ -14,6 +14,6 @@ TEST_CASE("t1")
             std::ranges::begin(v2), std::ranges::end(v2)
         );
 
-    CHECK(res == std::strong_ordering::less);
+    CHECK((res == std::strong_ordering::less));
 }
 

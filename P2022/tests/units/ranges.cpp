@@ -10,6 +10,6 @@ TEST_CASE("ranges")
     auto res = 
         std::ranges::lexicographical_compare_three_way(v1, v2);
 
-    CHECK(res == std::strong_ordering::greater);
+    CHECK((res == std::strong_ordering::greater));
 }
 

@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <ranges>
+#include <concepts>
 
 
 namespace std 
@@ -22,10 +23,11 @@ namespace std::ranges
         class Proj1,
         class Proj2
     >
-    using lexicographical_compare_three_way_result_t =
+
+    using three_way_comparator_result_t =
         invoke_result_t<
-            Comp, 
-            typename projected<I1, Proj1>::value_type, 
+            Comp&,
+            typename projected<I1, Proj1>::value_type,
             typename projected<I2, Proj2>::value_type
         >; // exposition-only
 
@@ -36,12 +38,43 @@ namespace std::ranges
             class Proj1,
             class Proj2
     >
-    constexpr bool is_lexicographical_compare_three_way_result_ordering =
+    constexpr bool is_three_way_ordering =
             std::same_as_any_of<
-                lexicographical_compare_three_way_result_t<
-                    I1, I2, Comp, Proj1, Proj2
-                >,
-                std::strong_ordering, std::weak_ordering, std::partial_ordering>; //exposition-only
+                three_way_comparator_result_t<I1, I2, Comp, Proj1, Proj2>,
+                std::strong_ordering,
+                std::weak_ordering,
+                std::partial_ordering>; //exposition-only
+
+    template<
+            class I1,
+            class I2,
+            class Comp,
+            class Proj1,
+            class Proj2
+    >
+    concept three_way_invocable =
+        input_iterator<I1> &&
+        input_iterator<I2> &&
+        std::regular_invocable<
+            Comp&,
+            indirect_result_t<Proj1, I1>,
+            indirect_result_t<Proj2, I2>> &&
+            is_three_way_ordering<I1, I2, Comp, Proj1, Proj2>; //exposition-only
+
+
+    template<
+            class I1,
+            class I2,
+            class Comp,
+            class Proj1,
+            class Proj2
+    >
+    concept three_way_comperator =
+        std::indirectly_readable<I1> &&
+        std::indirectly_readable<I2> &&
+        std::copy_constructible<Comp> &&
+        three_way_invocable<I1, I2, Comp&, Proj1&, Proj2&>;
+
 
     template<
         input_iterator I1, sentinel_for<I1> S1,
@@ -51,9 +84,7 @@ namespace std::ranges
         class Proj2 = identity
     >
     requires
-        is_lexicographical_compare_three_way_result_ordering<
-            I1, I2, Comp, Proj1, Proj2
-        >
+        three_way_comperator<I1, I2, Comp, Proj1, Proj2>
     constexpr auto
         lexicographical_compare_three_way( 
             I1 first1, 
@@ -63,12 +94,7 @@ namespace std::ranges
             Comp comp = {},
             Proj1 proj1 = {}, 
             Proj2 proj2 = {}
-    ) -> common_comparison_category_t<
-                decltype(
-                    comp(proj1(*first1), proj2(*first2))
-                ), 
-                strong_ordering
-         >
+    ) -> three_way_comparator_result_t<I1, I2, Comp, Proj1, Proj2>
     {
         while (first1 != last1)
         {
@@ -100,9 +126,7 @@ namespace std::ranges
         class Proj2 = identity
     >
     requires
-        is_lexicographical_compare_three_way_result_ordering<
-            iterator_t<R1>, iterator_t<R2>, Comp, Proj1, Proj2
-        > 
+    three_way_comperator<iterator_t<R1>, iterator_t<R2>, Comp, Proj1, Proj2>
     constexpr auto
         lexicographical_compare_three_way( 
             R1&& r1,
@@ -110,12 +134,7 @@ namespace std::ranges
             Comp comp = {},
             Proj1 proj1 = {}, 
             Proj2 proj2 = {}
-    ) -> common_comparison_category_t<
-                decltype(
-                    comp(proj1(*ranges::begin(r1)), proj2(*ranges::begin(r2)))
-                ), 
-                strong_ordering
-         >
+    ) -> three_way_comparator_result_t<iterator_t<R1>, iterator_t<R2>, Comp, Proj1, Proj2>
      {
          return lexicographical_compare_three_way(
                  ranges::begin(r1), ranges::end(r1),

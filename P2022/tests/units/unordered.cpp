@@ -35,6 +35,6 @@ TEST_CASE("unordered")
             CharIntComp{}
         );
 
-    CHECK(res == std::partial_ordering::unordered);
+    CHECK((res == std::partial_ordering::unordered));
 }
 
