@@ -1,0 +1,1 @@
+include ../pdf-generator/Makefile
