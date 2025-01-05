@@ -1,3 +1,9 @@
+# This repo is archived
+
+There was almost no activity in this repo over the years, and it might be mistakenly perceived as representing something officially connected to WG21, which isn't the case.  For these reasons, the repo is now archived.
+
+------------------------------------------------
+
 # Papers
 A repository for working wg21 papers
 
